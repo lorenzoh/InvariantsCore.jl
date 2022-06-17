@@ -1,0 +1,7 @@
+name = "InvariantsCore"
+uuid = "69cbffe8-09de-43b1-81db-93034495284f"
+authors = ["lorenzoh <lorenz.ohly@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
