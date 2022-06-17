@@ -1,6 +1,6 @@
 using InvariantsCore
-using Test
+using InlineTest, ReTest
 
-@testset "InvariantsCore.jl" begin
-    # Write your tests here.
-end
+include("InvariantsCoreTests.jl")
+
+InvariantsCoreTests.runtests()
