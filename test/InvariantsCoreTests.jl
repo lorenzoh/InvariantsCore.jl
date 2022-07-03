@@ -24,6 +24,7 @@ function testinvariant(inv, input)
     @test_nowarn title(inv)
     @test_nowarn description(inv)
     @test_nowarn satisfies(inv, input)
+    @test_nowarn inv(input)
 end
 
 # ## Tests
