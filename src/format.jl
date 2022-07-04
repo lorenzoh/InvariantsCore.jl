@@ -17,7 +17,9 @@ function __getmdstr(io::IO, md::AsMarkdown)
                                   :displaysize => get(io, :displaysize, (88, 500)))),
             md)
     res = String(strip(String(take!(buf))))
-    res = replace(res, "  " => "", "\n\n\n" => "\n\n")
+    # two calls so it doesn't crash on 1.6
+    res = replace(res, "  " => "")
+    res = replace(res, "\n\n\n" => "\n\n")
     return res
 end
 
