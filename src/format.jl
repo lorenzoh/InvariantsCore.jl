@@ -16,7 +16,7 @@ function __getmdstr(io::IO, md::AsMarkdown)
                                   :color => get(io, :color, false),
                                   :displaysize => get(io, :displaysize, (88, 500)))),
             md)
-    res = String(strip(String(take!(buf))))
+    res = strip(String(take!(buf)))
     # two calls so it doesn't crash on 1.6
     res = replace(res, "  " => "")
     res = replace(res, "\n\n\n" => "\n\n")
