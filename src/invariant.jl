@@ -21,6 +21,7 @@ function Invariant(fn, title::String; description = nothing, inputfn = identity,
     Invariant(; fn, title, description, inputfn, format)
 end
 
+(inv::Invariant)(args...) = check(inv, args...)
 
 title(inv::Invariant) = inv.format(inv.title)
 description(inv::Invariant) =
