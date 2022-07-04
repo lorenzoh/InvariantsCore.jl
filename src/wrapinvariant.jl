@@ -2,13 +2,12 @@
 # changing part of its functionality
 
 struct WrapInvariant <: AbstractInvariant
-    inv
-    title
-    description
-    inputfn
-    format
+    inv::Any
+    title::Any
+    description::Any
+    inputfn::Any
+    format::Any
 end
-
 
 function title(wrap::WrapInvariant)
     t = isnothing(wrap.title) ? title(wrap.inv) : wrap.title

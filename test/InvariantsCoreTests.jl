@@ -5,12 +5,11 @@ using InvariantsCore
 using InvariantsCore: Invariant, WrapInvariant, InvariantException, invariant, title,
                       description, satisfies, check, check_throw
 
-
 # ## Helpers and setup
 
 function exampleinvariant(symbol = :n)
     return Invariant("`$symbol` is positive",
-        description = "The number `$symbol` should be larger than `0`.") do x
+                     description = "The number `$symbol` should be larger than `0`.") do x
         if !(x isa Number)
             return "`$symbol` has type $(typeof(x)), but it should be a `Number` type."
         else
@@ -38,7 +37,6 @@ end
     @test occursin("larger", satisfies(inv, -1))
     @test occursin("0", string(description(inv)))
 end
-
 
 @testset "WrapInvariant" begin
     @testset "Pass-through" begin
@@ -75,23 +73,19 @@ end
 
     @testset "Compose" begin
         @testset "all" begin
-            invs = invariant("all", [
-                invariant(
-                    input -> input ? nothing : "Not true", "child",
-                    inputfn = inputs -> inputs[i])
-                for i in 1:3
-            ])
+            invs = invariant("all",
+                             [invariant(input -> input ? nothing : "Not true", "child",
+                                        inputfn = inputs -> inputs[i])
+                              for i in 1:3])
             @test check(Bool, invs, [true, true, true])
             @test !check(Bool, invs, [true, true, false])
             @test_throws InvariantException check_throw(invs, [true, false, false])
         end
         @testset "any" begin
-            invs = invariant("all", [
-                invariant(
-                    input -> input ? nothing : "Not true", "child",
-                    inputfn = inputs -> inputs[i])
-                for i in 1:3
-            ], any)
+            invs = invariant("all",
+                             [invariant(input -> input ? nothing : "Not true", "child",
+                                        inputfn = inputs -> inputs[i])
+                              for i in 1:3], any)
             @test check(Bool, invs, [true, true, true])
             @test check(Bool, invs, [true, true, false])
             @test !check(Bool, invs, [false, false, false])

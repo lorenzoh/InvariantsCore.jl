@@ -4,22 +4,21 @@ abstract type InvariantList <: AbstractInvariant end
 title(invs::InvariantList) = invs.title
 description(invs::InvariantList) = invs.description
 
-
 # ## `AllInvariant`
 
-struct AllInvariant{I<:AbstractInvariant} <: InvariantList
+struct AllInvariant{I <: AbstractInvariant} <: InvariantList
     invariants::Vector{I}
     title::String
     description::Union{Nothing, String}
     shortcircuit::Bool
 end
 
-AllInvariant(
-    invariants, title::String;
-    description = nothing,
-    shortcircuit = true,
-    kwargs...
-) = invariant(AllInvariant(invariants, title, description, shortcircuit); kwargs...)
+function AllInvariant(invariants, title::String;
+                      description = nothing,
+                      shortcircuit = true,
+                      kwargs...)
+    invariant(AllInvariant(invariants, title, description, shortcircuit); kwargs...)
+end
 
 function satisfies(invs::AllInvariant, input)
     results = []
@@ -39,27 +38,24 @@ function satisfies(invs::AllInvariant, input)
                 keepchecking = false
             end
         end
-
     end
     return all(isnothing, results) ? nothing : results
 end
 
-
 # ## `AnyInvariant`
 
-struct AnyInvariant{I<:AbstractInvariant} <: InvariantList
+struct AnyInvariant{I <: AbstractInvariant} <: InvariantList
     invariants::Vector{I}
     title::String
     description::Union{Nothing, String}
 end
 
-AnyInvariant(
-    invariants, title::String;
-    description = nothing,
-    shortcircuit = true,
-    kwargs...
-) = invariant(AnyInvariant(invariants, title, description); kwargs...)
-
+function AnyInvariant(invariants, title::String;
+                      description = nothing,
+                      shortcircuit = true,
+                      kwargs...)
+    invariant(AnyInvariant(invariants, title, description); kwargs...)
+end
 
 function satisfies(invs::AnyInvariant, input)
     results = []

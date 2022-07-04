@@ -1,7 +1,6 @@
 # This file defines `format_markdown`, a helper to turn Markdown strings
 # into richly formatted text output.
 
-
 struct AsMarkdown{T}
     s::T
 end
@@ -13,17 +12,14 @@ end
 function __getmdstr(io::IO, md::AsMarkdown)
     md = Markdown.parse(md.s)
     buf = IOBuffer()
-    display(
-        TextDisplay(
-            IOContext(buf,
-                      :color => get(io, :color, false),
-                      :displaysize => get(io, :displaysize, (88, 500)))),
-        md)
+    display(TextDisplay(IOContext(buf,
+                                  :color => get(io, :color, false),
+                                  :displaysize => get(io, :displaysize, (88, 500)))),
+            md)
     res = String(strip(String(take!(buf))))
     res = replace(res, "  " => "", "\n\n\n" => "\n\n")
     return res
 end
-
 
 function Base.string(md::AsMarkdown)
     return __getmdstr(IOContext(IOBuffer(), :color => true, :displaysize => (88, 500)), md)

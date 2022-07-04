@@ -58,7 +58,6 @@ Otherwise return an error message explaining why the invariant is violated.
 """
 function satisfies end
 
-
 # ## Defaults
 
 function errormessage(inv::AbstractInvariant, msg)
@@ -67,19 +66,16 @@ function errormessage(inv::AbstractInvariant, msg)
     return String(take!(buf))
 end
 
-
 function errormessage(io::IO, inv::AbstractInvariant, msg)
     println(io)
     showdescription(io, inv)
     println(io, msg)
 end
 
-
 function showdescription(io, inv)
     desc = description(inv)
     isnothing(desc) || print(io, description(inv))
 end
-
 
 function showtitle(io, inv)
     print(io, title(inv))

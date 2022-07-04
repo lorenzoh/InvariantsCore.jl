@@ -7,7 +7,6 @@
 #
 # The basic method simply returns an [`Invariant`](#):
 
-
 """
     invariant(fn, title; kwargs...)
 
@@ -82,19 +81,25 @@ invariant(fn, title::String; kwargs...) = Invariant(fn, title; kwargs...)
 # `invariant` can be called on a vector of invariants, creating an invariant that
 # logically composes them (either AND or OR):
 
-invariant(title, invariants::AbstractVector{<:AbstractInvariant}; kwargs...) =
+function invariant(title, invariants::AbstractVector{<:AbstractInvariant}; kwargs...)
     invariant(title, invariants, all; kwargs...)
-invariant(title, invariants::AbstractVector{<:AbstractInvariant},
-            ::typeof(all); kwargs...) = AllInvariant(invariants, title; kwargs...)
-invariant(title, invariants::AbstractVector{<:AbstractInvariant},
-            ::typeof(any); kwargs...) = AnyInvariant(invariants, title; kwargs...)
+end
+function invariant(title, invariants::AbstractVector{<:AbstractInvariant},
+                   ::typeof(all); kwargs...)
+    AllInvariant(invariants, title; kwargs...)
+end
+function invariant(title, invariants::AbstractVector{<:AbstractInvariant},
+                   ::typeof(any); kwargs...)
+    AnyInvariant(invariants, title; kwargs...)
+end
 
 # `invariant` can also wrap an invariant, changing some of its attributes.
 # For a general `AbstractInvariant`, this will return a [`WrapInvariant`](#):
 
 function invariant(inv::AbstractInvariant; title = nothing, inputfn = identity,
                    description = nothing, format = nothing)
-    if isnothing(title) && inputfn === identity && isnothing(description) && isnothing(format)
+    if isnothing(title) && inputfn === identity && isnothing(description) &&
+       isnothing(format)
         return inv
     end
     return WrapInvariant(inv, title, description, inputfn, format)
@@ -111,7 +116,6 @@ function invariant(inv::Invariant; title = nothing, inputfn = identity,
                      inputfn === identity ? inv.inputfn : inputfn ∘ inv.inputfn,
                      isnothing(format) ? inv.format : format)
 end
-
 
 # ## `check`
 
@@ -131,9 +135,7 @@ function check(invariant, input)
     return CheckResult(invariant, res)
 end
 
-
 check(::Type{Bool}, invariant, input) = isnothing(satisfies(invariant, input))
-
 
 struct CheckResult{I, R}
     invariant::I
@@ -141,7 +143,7 @@ struct CheckResult{I, R}
 end
 Base.convert(::Type{Bool}, checkres::CheckResult) = isnothing(checkres.result)
 
-function Base.show(io::IO, checkres::CheckResult{<:I, Nothing}) where I
+function Base.show(io::IO, checkres::CheckResult{<:I, Nothing}) where {I}
     print(io, "\e[32m✔ Invariant satisfied:\e[0m ")
     print(io, title(checkres.invariant))
 end
@@ -169,8 +171,7 @@ function check_throw(invariant, input)
     throw(InvariantException(invariant, res))
 end
 
-
-struct InvariantException{I<:AbstractInvariant, M}
+struct InvariantException{I <: AbstractInvariant, M}
     invariant::I
     msg::M
 end
