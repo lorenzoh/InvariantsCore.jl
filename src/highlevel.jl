@@ -76,7 +76,7 @@ Throw an error when an invariant is not satisfied:
 check_throw(inv, 1)
 ```
 """
-invariant(fn, title::String; kwargs...) = Invariant(fn, title; kwargs...)
+invariant(fn, title::String; kwargs...) = Invariant(; fn, title, kwargs...)
 
 # `invariant` can be called on a vector of invariants, creating an invariant that
 # logically composes them (either AND or OR):
@@ -136,6 +136,7 @@ function check(invariant, input)
 end
 
 check(::Type{Bool}, invariant, input) = isnothing(satisfies(invariant, input))
+check(::Type{Exception}, invariant, input) = check_throw(invariant, input)
 
 struct CheckResult{I, R}
     invariant::I
@@ -145,15 +146,17 @@ Base.convert(::Type{Bool}, checkres::CheckResult) = isnothing(checkres.result)
 
 function Base.show(io::IO, checkres::CheckResult{<:I, Nothing}) where {I}
     print(io, "\e[32m✔ Invariant satisfied:\e[0m ")
-    print(io, title(checkres.invariant))
+    print(io, md(title(checkres.invariant)))
 end
 
 function Base.show(io::IO, checkres::CheckResult)
     print(io, "\e[1m\e[31m⨯ Invariant not satisfied:\e[0m\e[1m ")
-    print(io, title(checkres.invariant))
-    print(io, "\e[22m\n")
+    print(io, md(title(checkres.invariant)))
+    println(io, "\e[22m\n")
     errormessage(io, checkres.invariant, checkres.result)
 end
+
+md(s) = string(AsMarkdown(s))
 
 # For cases where violating an invariant should lead to an error be thrown, use
 # [`check_throw`](#):
@@ -180,3 +183,8 @@ function Base.showerror(io::IO, e::InvariantException)
     println(io, "Invariant violated!")
     errormessage(io, e.invariant, e.msg)
 end
+
+
+# Allow calling the invariant so that `check` doesn't need to be imported.
+(inv::AbstractInvariant)(args...) = check(inv, args...)
+(inv::AbstractInvariant)(T::Type, args...) = check(T, inv, args...)

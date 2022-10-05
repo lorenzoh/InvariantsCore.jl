@@ -4,6 +4,7 @@
 struct AsMarkdown{T}
     s::T
 end
+AsMarkdown(am::AsMarkdown) = am
 
 function Base.show(io::IO, md::AsMarkdown)
     print(io, __getmdstr(io, md))

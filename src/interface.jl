@@ -69,6 +69,7 @@ end
 function errormessage(io::IO, inv::AbstractInvariant, msg)
     println(io)
     showdescription(io, inv)
+    println(io)
     println(io, msg)
 end
 

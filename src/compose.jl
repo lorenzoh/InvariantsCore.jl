@@ -31,7 +31,12 @@ function satisfies(invs::AllInvariant, input)
             res = try
                 satisfies(inv, input)
             catch e
-                "Unexpected error while checking invariant: $e"
+                """Unexpected error while checking invariant:
+
+                ```
+                $(sprint(Base.showerror, e))
+                ```
+                """
             end
             push!(results, res)
             if !isnothing(res) && invs.shortcircuit
